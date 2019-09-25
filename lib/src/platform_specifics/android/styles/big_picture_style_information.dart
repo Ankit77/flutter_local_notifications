@@ -1,5 +1,7 @@
-part of flutter_local_notifications;
+import 'default_style_information.dart';
+import '../enums.dart';
 
+/// Used to pass the content for an Android notification displayed using the big picture style
 class BigPictureStyleInformation extends DefaultStyleInformation {
   /// Overrides ContentTitle in the big form of the template.
   final String contentTitle;
@@ -25,6 +27,9 @@ class BigPictureStyleInformation extends DefaultStyleInformation {
   /// Specifies the source for the bitmap to be used as the payload for the BigPicture notification
   final BitmapSource bigPictureBitmapSource;
 
+  /// Hides the large icon when showing the expanded notification
+  final bool hideExpandedLargeIcon;
+
   BigPictureStyleInformation(this.bigPicture, this.bigPictureBitmapSource,
       {this.contentTitle,
       this.summaryText,
@@ -33,7 +38,8 @@ class BigPictureStyleInformation extends DefaultStyleInformation {
       this.largeIcon,
       this.largeIconBitmapSource,
       bool htmlFormatContent = false,
-      bool htmlFormatTitle = false})
+      bool htmlFormatTitle = false,
+      this.hideExpandedLargeIcon = false})
       : super(htmlFormatContent, htmlFormatTitle);
 
   @override
@@ -45,10 +51,16 @@ class BigPictureStyleInformation extends DefaultStyleInformation {
       'htmlFormatContentTitle': htmlFormatContentTitle,
       'htmlFormatSummaryText': htmlFormatSummaryText,
       'largeIcon': largeIcon,
-      'largeIconBitmapSource': largeIconBitmapSource?.index,
       'bigPicture': bigPicture,
-      'bigPictureBitmapSource': bigPictureBitmapSource?.index
+      'bigPictureBitmapSource': bigPictureBitmapSource?.index,
+      'hideExpandedLargeIcon': hideExpandedLargeIcon
     };
+
+    if (largeIconBitmapSource != null) {
+      bigPictureStyleJson['largeIconBitmapSource'] =
+          largeIconBitmapSource.index;
+    }
+
     styleJson.addAll(bigPictureStyleJson);
     return styleJson;
   }

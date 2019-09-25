@@ -1,8 +1,138 @@
+# [0.8.3]
+* [Android] Changed intents to use the `FLAG_UPDATE_CURRENT` flag instead of `FLAG_CANCEL_CURRENT` as alarms weren't being cleared out properly when updating or cancel a notification. Thanks to [WJQ](https://github.com/jjs1015) for submitting the PR to address the cancellation issue
+
+# [0.8.2+1]
+* Remove `ScheduledAndroidNotificationPrecision` enum that wasn't being used
+* Update readme around approach used to develop the plugin
+
+# [0.8.2]
+* [iOS] Fix issue [295](https://github.com/MaikuB/flutter_local_notifications/issues/295) where `onSelectNotification` callback wasn't trigger when a notification had been tapped on whilst the app was terminated
+
+# [0.8.1+1]
+* Update comment in example around grouped notifications to clarify that the summary notification ia required for all versions of Android
+* Update email address in pubspec.yaml
+
+# [0.8.1]
+* [iOS] Accepted PR from [Josh Burton](https://github.com/athornz) that improves ability for plugin to work in multiple isolate by moving state to instance variables
+* [iOS] Add a guard to prevent a scenario from happening where it may still be possible for the `onDidReceiveLocalNotification` callback to trigger on iOS 10+
+* Minor update to readme on raising issues and correction on payload information
+
+# [0.8.0]
+* Added an optional parameter named `androidAllowWhileIdle` to `schedule` method. This will allow notifications to still display at the specified time when the Android device is in an low-power idle mode.
+* **BREAKING CHANGE** Bump minimum Flutter version to 1.5.0
+* **BREAKING CHANGE** Update Flutter dependencies
+
+# [0.7.1+3]
+* Fix build status badge
+
+# [0.7.1+2]
+* Started adding Cirrus CI configuration and include CI status badge as part of readme
+
+# [0.7.1+1]
+* Updated readme to include information about OS limits related to scheduled notifications
+
+# [0.7.1]
+* [Android] Added ability to specify the "ticker" text. Thanks to PR submitted by [Zhang Jing](https://github.com/byrdkm17)
+* Spelling mistake fixes in readme. Thanks to PR submitted by [Wanbok (Wayne) Choi](https://github.com/wanbok)
+
+# [0.7.0]
+* **BREAKING CHANGE** [Android] Updated to Gradle 5.1.1 and Android Gradle plugin has been updated to 3.4.0 (aligns with Android Studio 3.4 release). Example app has also been updated to Gradle 5.1.1. Apps will need to update to use the plugin. Please see [here](https://developer.android.com/studio/releases/gradle-plugin) for more information if you need help on updating
+* [Android] Add ability to specify the LED colour of the notification. Updated example app to show this can be done. Note that for Android 8.0+ (i.e. API 26+) that this is tied to the notification channel
+
+
+# [0.6.1]
+* [Android/iOS] Added `pendingNotificationRequests` method. This will return a list of pending notification requests that have been scheduled to be shown in the future. Updated example app to include sample code for calling the method
+* [Android] Fix an issue where scheduling a notification (recurring or otherwise) with the same id as another notification that was scheduled with the same id would result in both being stored in shared preferences. The shared preferences were used to reschedule notifications on reboot and shouldn't affect the functionality of displaying the notifications
+* Updated plugin methods to return `Future<void>` instead of `Future` as per Dart guidelines
+* Updated README to mention known issue with scheduling notifications and daylight savings
+* Refactored widgets in example app
+
+# [0.6.0]
+* **BREAKING CHANGE** [Android] Updated Gradle plugin to 3.3.2
+* **BREAKING CHANGE** [Android] Changed to store the name of drawable specified as the small icon to be used for Android notifications instead of the resource ID. This should fix the scenario where an app could be updated and the resource IDs got change and cause scheduled notifications to not appear. Believe this fix should retroactively apply for notifications scheduled with an icon specified but won't apply to those that were scheduled to use the default icon specified via the `initialize` method. This is due to the fact the name of the default icon wasn't being cached in previous ones but this has now changed so it's cached in shared preferences from this version onwards
+
+# [0.5.2]
+* Fix for when multiple isolates use the plugin. Thanks to PR submitted by [xtelinco](https://github.com/xtelinco)
+* Added the `channelAction` field to the `AndroidNotificationDetails` class. This provides options for managing notification channels on Android. Default behaviour is to create the notification channel if it doesn't exist (which was what it it use to do). Another option is to update the details of the notification channel. Example app has been updated to demonstrate how to update a notification channel when sending a notification
+
+# [0.5.1+2]
+* Highlight note on migrating to AndroidX more in README
+
+# [0.5.1+1]
+* README corrections and add information on migrating to AndroidX
+
+# [0.5.1]
+* Updated gradle plugin of example app to 3.3.1
+* Added support for messaging style notifications on Android as requested in issue [159](https://github.com/MaikuB/flutter_local_notifications/issues/159). See example app for some sample code
+
+# [0.5.0]
+* **BREAKING CHANGE** Migrated to use AndroidX as the Android support libraries are deprecated. There shouldn't be any functional changes. Developers may require migrating their apps to support this following [this guide](https://developer.android.com/jetpack/androidx/migrate). This addresses issue [162](https://github.com/MaikuB/flutter_local_notifications/issues/162). Thanks to [Jeff Scaturro](https://github.com/JeffScaturro) for submitting the PR for this work. Note that if you don't want to migrate your app to use AndroidX yet then you may need to pin dependencies to a specific version
+
+# [0.4.5]
+* Fix issue [160](https://github.com/MaikuB/flutter_local_notifications/issues/160) so that notifications created with the `schedule` on Android will appear at the exact date and time they are scheduled
+
+# [0.4.4+2]
+* Fix CHANGELOG
+
+# [0.4.4+1]
+* **BREAKING CHANGE** Fix naming of `onDidReceiveLocalNotification` property in the `IOSInitializationSettings` class (was previously named `onDidReceiveLocalNotificationCallback` by accident)
+
+# [0.4.4]
+*  **BREAKING CHANGE** removed `registerUNNotificationCenterDelegate` argument for the `IOSInitializationSettings` class as it wasn't actually used.
+* Plugin can now handle `didReceiveLocalNotification` delegate method in iOS and allow developers to handle the associated callback in Flutter. Added a `onDidReceiveLocalNotificationCallback` argument to the `IOSInitializationSettings` class to enable this and updated the sample code to demonstrate the usage. This should resolve issue [14](https://github.com/MaikuB/flutter_local_notifications/issues/14).
+
+# [0.4.3]
+* Merged PR from Aine LLC (ganessaa) to fix issue [140](https://github.com/MaikuB/flutter_local_notifications/issues/140) where scheduled notifications were shown immediately on iOS versions before 10. Note that this issue is likely related to an [known issue in the Flutter engine](https://github.com/flutter/flutter/issues/21313) that may require switching channels to be addressed as the fix isn't on the stable channel yet.
+* [Android] Provide a way to hide the large icon when showing an expanded big picture notification via the  `hideExpandedLargeIcon` flag within thr `BigPictureStyleInformation` class. This provides a solution for issue [136](https://github.com/MaikuB/flutter_local_notifications/issues/136). Updated the example to demonstrate
+* Merged PR from (riccardoratta) so that sample code is coloured in GitHub to improve readability.
+
+# [0.4.2+1]
+* Update changelog to indicate when `MessageHandler` typedef got renamed (in 0.4.1) as raised in issue [132](https://github.com/MaikuB/flutter_local_notifications/issues/132)
+
+# [0.4.2]
+* **BREAKING CHANGE** Fix issue [127](https://github.com/MaikuB/flutter_local_notifications/issues/127) by changing plugin to Android Support Library version 27.1.1, compile and target SDK version to 27 due to issues Flutter has with API 28. 
+
+# [0.4.1+1]
+* Remove unused code in example app
+
+# [0.4.1]
+* **BREAKING CHANGE** renamed the `selectNotification` callback exposed by the `initialize` function to `onSelectNotification`
+* **BREAKING CHANGE** renamed the `MessageHandler` typedef to `SelectNotificationCallback`
+* **BREAKING CHANGE** updated plugin to Android Support Library version 28.0, compile and target SDK version to 28
+* Address issue [115](https://github.com/MaikuB/flutter_local_notifications/issues/115) by adding validation to the notification ID values. This ensure they're within the range of a 32-bit integer as notification IDs on Android need to be within that range. Note that an `ArgumentError` is thrown when a value is out of range. 
+* Updated the Android Integration section around registering receivers via the Android manifest as per the suggestion in [116](https://github.com/MaikuB/flutter_local_notifications/issues/116)
+* Updated version of the http dependency for used by the example app
+
+# [0.4.0]
+* [Android] Fix issue [112](https://github.com/MaikuB/flutter_local_notifications/issues/112) where big picture notifications wouldn't show
+
+# [0.3.9]
+* [Android] Added ability to show progress notifications and updated example app to demonstrate how to display them
+
+# [0.3.8]
+* Added `getNotificationAppLaunchDetails()` method that could be used to determine if the app was launched via notification (raised in issue [99](https://github.com/MaikuB/flutter_local_notifications/issues/99))
+* Added documentation around ProGuard configuration to Android Integration section of the README
+
+## [0.3.7]
+* [Android] Fix issue [88](https://github.com/MaikuB/flutter_local_notifications/issues/88) where cancelled notifications could reappear on reboot.
+
+## [0.3.6]
+* [Android] Add mapping to the setOnlyAlertOnce method [83](https://github.com/MaikuB/flutter_local_notifications/issues/83). Allows the sound, vibrate and ticker to be played if the notification is not already showing
+* [Android] Add mapping to setShowBadge for notification channels that controls if notifications posted to channel can appear as application icon badges in a Launcher
+
+## [0.3.5]
+* [Android] Will now throw a PlatformException with a more friendly error message on the Flutter side when a specified resource hasn't been found e.g. when specifying the icon for the notification
+* Fix overflow rendering issue in the example app
+
+## [0.3.4]
+* [Android] Fix issue [71](https://github.com/MaikuB/flutter_local_notifications/issues/71) where the wrong time on when the notification occurred is being displayed. **BREAKING CHANGE** this involves changing it the receiver for displaying a scheduled notification will only build the notification prior to displaying it. There is a fix applied to existing scheduled notifications in this release that will be eventually be removed as going forward all scheduled notifications will work as just described
+* [Android] Fix an issue with serialising and deserialising the notifications so that additional style types (big picture and inbox) would be recognised. This affected scheduled notifications where upon rebooting the device, the plugin would need to reschedule the notifications using information saved in shared preferences.
+
 ## [0.3.3]
-* [iOS] Fixes issue [61](https://github.com/MaikuB/flutter_local_notifications/issues/61) where the `showDailyAtTime` and `showWeeklyAtDayAndTime` methods may not show notifications that should appear the next day. Thanks to Jeff Scaturro (JeffScaturro) for submitting the PR to fix this.
+* [iOS] Fixes issue [61](https://github.com/MaikuB/flutter_local_notifications/issues/61) where the `showDailyAtTime` and `showWeeklyAtDayAndTime` methods may not show notifications that should appear the next day. Thanks to [Jeff Scaturro](https://github.com/JeffScaturro) for submitting the PR to fix this.
 
 ## [0.3.2]
-* No functional changes. Updated the README around raising issues, recurring Android notifications on Android and a fix in the getting started section (thanks to ebeem for spotting that).
+* No functional changes. Updated the README around raising issues, recurring Android notifications on Android and a fix in the getting started section (thanks to [ebeem](https://github.com/ebeem) for spotting that).
 
 ## [0.3.1]
 
@@ -51,12 +181,12 @@
 
 ## [0.2.3]
 
-* [Android/iOS] Add ability to have a notification shown daily at a specified time. Credits to Javier Lecuona (javiercbk) for submitting the PR for this.
+* [Android/iOS] Add ability to have a notification shown daily at a specified time. Credits to [Javier Lecuona](https://github.com/javiercbk) for submitting the PR for this.
 * [Android/iOS] Add ability to have a notification shown weekly on a specific day and time.
 
 ## [0.2.2]
 
-* [Android/iOS] Fix RepeatInterval not being mapped to the correct values on the native side. Thanks to Thibault Deckers (deckerst) for spotting the issue.
+* [Android/iOS] Fix RepeatInterval not being mapped to the correct values on the native side. Thanks to [Thibault Deckers](https://github.com/deckerst) for spotting the issue.
 
 ## [0.2.1]
 
